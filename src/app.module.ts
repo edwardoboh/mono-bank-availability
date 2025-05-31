@@ -7,18 +7,24 @@ import { TransactionService } from './transaction-source/transaction-source.serv
 import { TransactionSourceModule } from './transaction-source/transaction-source.module';
 import { ConfigModule } from '@nestjs/config';
 import { EnvValidationSchema } from './common/config/env-validation.config';
+import { BanksModule } from './banks/banks.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import Configs from './common/config/configuration';
 
 @Module({
   imports: [
     DatabaseModule,
     AvailabilityModule,
+    ScheduleModule.forRoot(),
     TransactionSourceModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-      validationSchema: EnvValidationSchema
+      validationSchema: EnvValidationSchema,
+      load: [Configs],
     }),
-    HealthModule
+    HealthModule,
+    BanksModule,
   ],
   controllers: [
     HealthController

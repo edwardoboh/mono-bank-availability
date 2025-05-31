@@ -20,32 +20,34 @@ export class AvailabilityService {
     }
 
     // Default job every 5 minutes
-    @Interval(300000)
+    @Interval(30000)
     async processOneHourWindow() {
         await this.processWindow('1h');
     }
 
-    @Interval(900000)
+    @Interval(90000)
     async processSixHourWindow() {
         await this.processWindow('6h');
     }
 
-    @Interval(3600000)
+    @Interval(360000)
     async processTwentyFourHourWindow() {
         await this.processWindow('24h');
     }
 
     async processWindow(timeWindow: TimeWindow) {
         for (const code of this.bankCodes) {
+            // Fetch aggregated status counts for the bank code and time window
             const counts = await this.txService.getStatusCounts(code, timeWindow);
             const statusCounts = counts ?? { "00": 0, "01": 0, "91": 0, "97": 0 };
 
+            // Calculate successful and total transactions
             const success = statusCounts['00'] + statusCounts['01'];
             const total = success + statusCounts['91'] + statusCounts['97'];
             
             let availability: number = null;
             if (total > 0) {
-                availability = (success / total) * 100;
+                availability = parseFloat((success / total * 100).toFixed(2));
             }
 
             const confidence = this.deriveConfidence(total);
@@ -68,7 +70,7 @@ export class AvailabilityService {
                 }
             });
         }
-        this.logger.debug(`Processed window ${window}`);
+        this.logger.debug(`Processed window ${timeWindow}`);
     }
 
     deriveConfidence(total: number): string {

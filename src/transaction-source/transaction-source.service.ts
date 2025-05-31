@@ -14,7 +14,7 @@ export class TransactionService implements TransactionSource {
         this.data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
     }
 
-    getStatusCounts(bankCode: string, timeWindow: TimeWindow): Promise<StatusCount | null> {
+    async getStatusCounts(bankCode: string, timeWindow: TimeWindow): Promise<StatusCount | null> {
         return Promise.resolve(this.data?.[bankCode]?.[timeWindow]) ?? Promise.resolve(null);
     }
 }
