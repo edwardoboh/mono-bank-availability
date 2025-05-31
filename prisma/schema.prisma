@@ -13,3 +13,18 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model BankAvailability {
+  id                           Int      @id @default(autoincrement())
+  bank_nip_code                String
+  time_window                  String
+  availability_percentage      Float?
+  confidence_level             String
+  total_transactions_in_window Int
+  status_counts                Json
+  last_calculated_at           DateTime @updatedAt
+
+  @@map("bank_availability_stats")
+  @@unique([bank_nip_code, time_window])
+  @@index([last_calculated_at])
+}
