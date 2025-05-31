@@ -1,15 +1,27 @@
 import { Module } from '@nestjs/common';
 import { HealthModule } from './health/health.module';
 import { HealthController } from './health/health.controller';
-import { DatabaseModule } from './database/database.module';
+import { DatabaseModule } from './common/database/database.module';
+import { TransactionService } from './transaction-source/transaction-source.service';
+import { TransactionSourceModule } from './transaction-source/transaction-source.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [
+    DatabaseModule,
+    TransactionSourceModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    HealthModule
+  ],
   controllers: [
     HealthController
   ],
   providers: [
-    HealthModule
-  ],
+    HealthModule,
+    TransactionService
+  ]
 })
 export class AppModule {}
