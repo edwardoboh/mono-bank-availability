@@ -27,15 +27,6 @@ export class AvailabilityService implements OnModuleInit {
         this.logger.debug('Scheduled jobs for 1h, 6h, and 24h time windows.');
     }
 
-    private addWindowJob(timeWindow: TimeWindow) {
-        const pollInterval = this.config.get<number>(`pollingMs.${timeWindow}`);
-        const name = `window-${timeWindow}`;
-        const interval = setInterval(async () => this.processWindow(timeWindow), pollInterval);
-
-        this.scheduler.addInterval(name, interval);
-        this.logger.debug(`Add Job | Windows ${timeWindow} | Interval ${pollInterval}ms`);
-    }
-
     async processWindow(timeWindow: TimeWindow) {
         for (const code of this.bankCodes) {
             // Fetch aggregated status counts for the bank code and time window
@@ -74,7 +65,16 @@ export class AvailabilityService implements OnModuleInit {
         this.logger.debug(`Processed window ${timeWindow}`);
     }
 
-    deriveConfidence(total: number): string {
+    private addWindowJob(timeWindow: TimeWindow) {
+        const pollInterval = this.config.get<number>(`pollingMs.${timeWindow}`);
+        const name = `window-${timeWindow}`;
+        const interval = setInterval(async () => this.processWindow(timeWindow), pollInterval);
+
+        this.scheduler.addInterval(name, interval);
+        this.logger.debug(`Add Job | Windows ${timeWindow} | Interval ${pollInterval}ms`);
+    }
+
+    private deriveConfidence(total: number): string {
         if (total === 0) return 'Insufficient Data';
         const lowMax = this.config.get<number>('confidence.lowMax');
         const medMax = this.config.get<number>('confidence.medMax');

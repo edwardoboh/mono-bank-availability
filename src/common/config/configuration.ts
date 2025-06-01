@@ -10,4 +10,5 @@ export default () => ({
     '24h': parseInt(process.env.WINDOW_24H_POLL_MS ?? '3600000', 10),
   },
   apiKey: process.env.API_KEY,
+  redisUrl: process.env.REDIS_URL,
 });

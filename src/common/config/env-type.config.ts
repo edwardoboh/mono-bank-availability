@@ -7,4 +7,5 @@ export class EnvType {
     WINDOW_6H_POLL_MS: number;
     WINDOW_24H_POLL_MS: number;
     API_KEY: string;
+    REDIS_URL: string;
 }

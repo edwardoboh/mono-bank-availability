@@ -1,9 +1,11 @@
-import { Controller, Get, HttpCode, Param, Query } from '@nestjs/common';
+import { Controller, Get, HttpCode, Param, Query, UseInterceptors } from '@nestjs/common';
 import { BanksService } from './banks.service';
 import { AvailabilityQueryDto } from './dto/availability-query.dto';
 import { HttpStatus } from '@nestjs/common';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('banks')
+@UseInterceptors(CacheInterceptor)
 export class BanksController {
     constructor(
         private readonly banksService: BanksService) {}

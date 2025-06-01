@@ -9,4 +9,5 @@ export const EnvValidationSchema = Joi.object({
     WINDOW_6H_POLL_MS: Joi.number().default(900000),
     WINDOW_24H_POLL_MS: Joi.number().default(3600000),
     API_KEY: Joi.string().optional(),
+    REDIS_URL: Joi.string().optional(),
 })
