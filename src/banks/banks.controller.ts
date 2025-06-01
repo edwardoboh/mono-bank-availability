@@ -1,6 +1,7 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, HttpCode, Param, Query } from '@nestjs/common';
 import { BanksService } from './banks.service';
 import { AvailabilityQueryDto } from './dto/availability-query.dto';
+import { HttpStatus } from '@nestjs/common';
 
 @Controller('banks')
 export class BanksController {
@@ -8,6 +9,7 @@ export class BanksController {
         private readonly banksService: BanksService) {}
 
     @Get('availability')
+    @HttpCode(HttpStatus.OK)
     async getAll(@Query() query: AvailabilityQueryDto) {
         const window = query.window || '1h';
         const data = await this.banksService.getAll(window);
@@ -15,6 +17,7 @@ export class BanksController {
     }
 
     @Get(':bankCode/availability')
+    @HttpCode(HttpStatus.OK)
     async getOne(
         @Param('bankCode') bankCode: string,
         @Query() query: AvailabilityQueryDto,

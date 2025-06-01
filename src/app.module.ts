@@ -10,6 +10,7 @@ import { EnvValidationSchema } from './common/config/env-validation.config';
 import { BanksModule } from './banks/banks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import Configs from './common/config/configuration';
+import { AuthGuard } from './auth/auth.guard';
 
 @Module({
   imports: [
@@ -31,7 +32,11 @@ import Configs from './common/config/configuration';
   ],
   providers: [
     HealthModule,
-    TransactionService
+    TransactionService,
+    {
+      provide: 'APP_GUARD',
+      useClass: AuthGuard,
+    }
   ]
 })
 export class AppModule {}
