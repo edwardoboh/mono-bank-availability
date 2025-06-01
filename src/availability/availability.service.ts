@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DatabaseService } from 'src/common/database/database.service';
-import { Interval } from '@nestjs/schedule';
+import { Interval, SchedulerRegistry } from '@nestjs/schedule';
 import { Logger } from '@nestjs/common';
 import { TransactionService } from 'src/transaction-source/transaction-source.service';
 import { TimeWindow } from 'src/common/constants/time-windows';
 
 @Injectable()
-export class AvailabilityService {
+export class AvailabilityService implements OnModuleInit {
     private readonly logger = new Logger(AvailabilityService.name);
     private readonly bankCodes: string[];
 
@@ -15,24 +15,25 @@ export class AvailabilityService {
         private readonly config: ConfigService,
         private readonly txService: TransactionService,
         private readonly dbService: DatabaseService,
+        private readonly scheduler: SchedulerRegistry
     ) {
         this.bankCodes = this.config.get<string[]>('bankCodes');
     }
 
-    // Default job every 5 minutes
-    @Interval(30000)
-    async processOneHourWindow() {
-        await this.processWindow('1h');
+    onModuleInit() {
+        this.addWindowJob('1h');
+        this.addWindowJob('6h');
+        this.addWindowJob('24h');
+        this.logger.debug('Scheduled jobs for 1h, 6h, and 24h time windows.');
     }
 
-    @Interval(90000)
-    async processSixHourWindow() {
-        await this.processWindow('6h');
-    }
+    private addWindowJob(timeWindow: TimeWindow) {
+        const pollInterval = this.config.get<number>(`pollingMs.${timeWindow}`);
+        const name = `window-${timeWindow}`;
+        const interval = setInterval(async () => this.processWindow(timeWindow), pollInterval);
 
-    @Interval(360000)
-    async processTwentyFourHourWindow() {
-        await this.processWindow('24h');
+        this.scheduler.addInterval(name, interval);
+        this.logger.debug(`Add Job | Windows ${timeWindow} | Interval ${pollInterval}ms`);
     }
 
     async processWindow(timeWindow: TimeWindow) {
