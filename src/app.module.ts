@@ -31,7 +31,6 @@ import { createKeyv } from '@keyv/redis';
     CacheModule.registerAsync({
       useFactory: async (configService: ConfigService) => {
         const REDIS_URL = configService.get<string>('redisUrl');
-        console.log('Redis URL: ', configService.get<string>('redisUrl'));
         return {
           ttl: 2 * 60 * 1000,  // Here, I am using a TTL <= 5seconds (the shortest poll frequency).
           stores: [createKeyv(REDIS_URL)],

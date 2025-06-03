@@ -1,6 +1,6 @@
 import { HttpException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { TimeWindow } from 'src/common/constants/time-windows';
-import { DatabaseService } from 'src/common/database/database.service';
+import { DatabaseService } from '../common/database/database.service';
 
 @Injectable()
 export class BanksService {

@@ -1,5 +1,5 @@
 import { IsIn, IsOptional } from 'class-validator';
-import { TIME_WINDOWS, TimeWindow } from 'src/common/constants/time-windows';
+import { TIME_WINDOWS, TimeWindow } from '../../common/constants/time-windows';
 
 export class AvailabilityQueryDto {
   @IsOptional()

@@ -1,9 +1,9 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { DatabaseService } from 'src/common/database/database.service';
+import { DatabaseService } from '../common/database/database.service';
 import { Interval, SchedulerRegistry } from '@nestjs/schedule';
 import { Logger } from '@nestjs/common';
-import { TransactionService } from 'src/transaction-source/transaction-source.service';
+import { TransactionService } from '../transaction-source/transaction-source.service';
 import { TimeWindow } from 'src/common/constants/time-windows';
 
 @Injectable()
@@ -74,7 +74,7 @@ export class AvailabilityService implements OnModuleInit {
         this.logger.debug(`Add Job | Windows ${timeWindow} | Interval ${pollInterval}ms`);
     }
 
-    private deriveConfidence(total: number): string {
+    public deriveConfidence(total: number): string {
         if (total === 0) return 'Insufficient Data';
         const lowMax = this.config.get<number>('confidence.lowMax');
         const medMax = this.config.get<number>('confidence.medMax');

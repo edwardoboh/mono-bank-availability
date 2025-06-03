@@ -10,8 +10,8 @@ services:
     env_file: .env
     # restart: on-failure
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
     networks:
       - app-network
 
@@ -23,6 +23,10 @@ services:
       POSTGRES_USER: monouser
       POSTGRES_PASSWORD: monopassword
       POSTGRES_DB: testdb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U monouser -d testdb"]
+      interval: 5s
+      retries: 5
     ports:
       - "5432:5432"
     volumes:

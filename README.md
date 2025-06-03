@@ -90,7 +90,7 @@ curl -H "x-api-key: $KEY" "$API/banks/NIP014/availability?window=6h"
 ## Running Test
 
 ```bash
-docker compose run --rm api npm test
+docker compose run --rm  --entrypoint "" api npm test
 ```
 Runs Jest unit + E2E suites inside the container; coverage saved to `/coverage`.
 

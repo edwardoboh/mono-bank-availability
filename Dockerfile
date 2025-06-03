@@ -13,7 +13,5 @@ COPY . ./
 RUN npx prisma generate
 
 RUN npm run build
-
-RUN ls -l
-
-CMD [ "node", "dist/main.js" ]
+RUN chmod +x ./start.sh
+ENTRYPOINT ["sh", "./start.sh"]
