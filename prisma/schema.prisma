@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model BankAvailability {
+  id                           Int      @id @default(autoincrement())
+  bank_nip_code                String
+  time_window                  String
+  availability_percentage      Float?
+  confidence_level             String
+  total_transactions_in_window Int
+  status_counts                Json
+  last_calculated_at           DateTime @updatedAt
+
+  @@map("bank_availability_stats")
+  @@unique([bank_nip_code, time_window])
+  @@index([last_calculated_at])
+}
